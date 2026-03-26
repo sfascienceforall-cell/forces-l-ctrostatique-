@@ -1,0 +1,268 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#fff;font-family:system-ui,-apple-system,sans-serif;}
+canvas{display:block;border-radius:12px;border:1.5px solid #e8e8e8;cursor:default;touch-action:none;}
+.cc{display:flex;align-items:center;gap:8px;margin:5px 0;}
+.cc-label{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;flex-shrink:0;}
+.val{min-width:58px;text-align:center;font-size:13px;font-weight:500;color:#2c2c2a;background:#f5f5f5;border:1.5px solid #d0d0d0;border-radius:20px;padding:5px 10px;}
+.btn{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #d0d0d0;background:#fff;color:#2c2c2a;}
+.btn.active{border-color:#185fa5;background:#e6f1fb;color:#185fa5;}
+</style>
+
+<canvas id="cv" style="width:100%;height:60vh;min-height:320px;"></canvas>
+
+<div style="font-size:13px;padding:10px 16px;border-radius:20px;background:#f5f5f5;border:1.5px solid #d0d0d0;color:#2c2c2a;margin:6px 0;font-family:ui-monospace,monospace;line-height:1.8;">
+  F = k·|q₁|·|q₂|/r² &nbsp;|&nbsp; F_tot = ΣF &nbsp;(superposition) &nbsp;|&nbsp; Maintiens le clic pour déplacer
+</div>
+
+<div style="display:flex;align-items:center;gap:10px;margin:8px 0 6px;">
+  <span style="font-size:13px;font-weight:500;color:#2c2c2a;background:#f5f5f5;border:1.5px solid #d0d0d0;border-radius:20px;padding:6px 14px;white-space:nowrap;">Nb de charges</span>
+  <div style="display:flex;gap:6px;">
+    <button class="btn active" id="nb1" onclick="setNb(1)">1</button>
+    <button class="btn" id="nb2" onclick="setNb(2)">2</button>
+    <button class="btn" id="nb3" onclick="setNb(3)">3</button>
+  </div>
+  <div style="display:flex;gap:6px;margin-left:8px;">
+    <button class="btn active" id="showInd" onclick="toggleInd()">Forces individuelles</button>
+  </div>
+</div>
+
+<div id="ctrls"></div>
+<div id="infobox" style="font-size:12px;padding:8px 14px;border-radius:20px;background:#f5f5f5;border:1.5px solid #d0d0d0;color:#555;margin:6px 0;font-family:ui-monospace,monospace;line-height:1.8;min-height:32px;"></div>
+
+<script>
+const cv=document.getElementById('cv');
+const K=9e9;
+let W=0,H=0,nb=2,dragging=-1,showInd=true;
+
+const COLORS=['#E24B4A','#378ADD','#1D9E75'];
+const BGCOLORS=['#fcebeb','#e6f1fb','#e1f5ee'];
+const BCOLORS=['#f09595','#b5d4f4','#9FE1CB'];
+// couleurs des forces individuelles entre paires
+const PAIR_COLS=['#7F77DD','#BA7517','#D4537E'];
+
+const charges=[
+  {x:0.35,y:0.5,q:3},
+  {x:0.65,y:0.5,q:-3},
+  {x:0.5,y:0.28,q:2},
+];
+
+function setNb(n){
+  nb=n;
+  [1,2,3].forEach(i=>document.getElementById('nb'+i).className=i===n?'btn active':'btn');
+  buildControls();
+}
+
+function toggleInd(){
+  showInd=!showInd;
+  document.getElementById('showInd').className=showInd?'btn active':'btn';
+}
+
+function buildControls(){
+  const div=document.getElementById('ctrls');
+  div.innerHTML='';
+  for(let i=0;i<nb;i++){
+    const q=charges[i].q;
+    const row=document.createElement('div');
+    row.className='cc';
+    row.innerHTML=`
+      <div class="cc-label" style="background:${BGCOLORS[i]};border:2px solid ${COLORS[i]};color:${COLORS[i]};">Q${i+1}</div>
+      <input type="range" id="q${i}" min="-5" max="5" value="${q}" step="0.5" style="flex:1;accent-color:${COLORS[i]};">
+      <span class="val" id="qv${i}" style="border-color:${BCOLORS[i]};color:${COLORS[i]};">${q>=0?'+':''}${q} nC</span>
+    `;
+    div.appendChild(row);
+    document.getElementById('q'+i).addEventListener('input',()=>{
+      charges[i].q=parseFloat(document.getElementById('q'+i).value);
+      const v=charges[i].q;
+      document.getElementById('qv'+i).textContent=(v>=0?'+':'')+v+' nC';
+    });
+  }
+}
+
+function syncSize(){
+  const r=cv.getBoundingClientRect();
+  const nW=Math.round(r.width)||700;
+  const nH=Math.round(r.height)||360;
+  if(nW!==W||nH!==H){
+    W=nW;H=nH;cv.width=W;cv.height=H;
+    charges[0].x=0.28;charges[0].y=0.5;
+    charges[1].x=0.72;charges[1].y=0.5;
+    charges[2].x=0.5;charges[2].y=0.25;
+  }
+}
+
+function cpx(c){return c.x*W;}
+function cpy(c){return c.y*H;}
+function chargeRadius(q){return 15+Math.abs(q)*2;}
+
+// Force de i sur j (vecteur px)
+function forcePair(i,j,scalePx){
+  const ci=charges[i],cj=charges[j];
+  const dx=cpx(cj)-cpx(ci), dy=cpy(cj)-cpy(ci);
+  const r2=dx*dx+dy*dy;
+  if(r2<1) return{fx:0,fy:0,r:0};
+  const r=Math.sqrt(r2);
+  const rM=r/W*5; // en mètres (1 canvas = 5m)
+  const F=K*Math.abs(ci.q*1e-9)*Math.abs(cj.q*1e-9)/(rM*rM);
+  const same=ci.q*cj.q>0;
+  // si même signe → répulsion : force sur j pointe de i→j (s'éloigne)
+  // si signes opp → attraction : force sur j pointe de j→i (s'approche)
+  const sign=same?1:-1;
+  const fx=sign*F*dx/r;
+  const fy=sign*F*dy/r;
+  return{fx,fy,F,r};
+}
+
+function drawArrow(ctx,x,y,vx,vy,col,label,thin){
+  const len=Math.sqrt(vx*vx+vy*vy);
+  if(len<2) return;
+  const nx=vx/len,ny=vy/len;
+  const ex=x+vx,ey=y+vy;
+  ctx.strokeStyle=col;ctx.lineWidth=thin?1.5:2.5;
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex,ey);ctx.stroke();
+  // tête
+  const hs=thin?6:9;
+  ctx.fillStyle=col;
+  const ang=Math.atan2(ny,nx);
+  ctx.save();ctx.translate(ex,ey);ctx.rotate(ang);
+  ctx.beginPath();ctx.moveTo(hs,0);ctx.lineTo(-hs*0.7,-hs*0.5);ctx.lineTo(-hs*0.7,hs*0.5);ctx.closePath();ctx.fill();
+  ctx.restore();
+  if(label){
+    ctx.font='500 11px system-ui';ctx.textAlign='center';ctx.fillStyle=col;
+    ctx.fillText(label,ex+nx*14,ey+ny*14);
+  }
+}
+
+function draw(){
+  syncSize();
+  const ctx=cv.getContext('2d');
+  ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+
+  const VIZ=4e11; // facteur de visualisation N→px
+
+  const infos=[];
+
+  // Pour chaque charge, calculer les forces individuelles et la résultante
+  for(let j=0;j<nb;j++){
+    const cj=charges[j];
+    const cx=cpx(cj),cy=cpy(cj);
+    let ftx=0,fty=0;
+
+    for(let i=0;i<nb;i++){
+      if(i===j) continue;
+      const {fx,fy,F}=forcePair(i,j,VIZ);
+      const vx=fx/F*(Math.min(Math.log10(F*VIZ+1)*18,80));
+      const vy=fy/F*(Math.min(Math.log10(F*VIZ+1)*18,80));
+      ftx+=vx;fty+=vy;
+
+      if(showInd&&nb>1){
+        // ligne pointillée entre les deux charges
+        const ci=charges[i];
+        const same=ci.q*cj.q>0;
+        ctx.strokeStyle=same?'#E24B4A33':'#378ADD33';
+        ctx.lineWidth=1;ctx.setLineDash([5,5]);
+        ctx.beginPath();ctx.moveTo(cpx(ci),cpy(ci));ctx.lineTo(cx,cy);ctx.stroke();
+        ctx.setLineDash([]);
+
+        // force individuelle (tirets couleur paire)
+        const pIdx=Math.min(i+j-1,2);
+        const pcol=PAIR_COLS[pIdx]+'cc';
+        ctx.strokeStyle=pcol;ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+        ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+vx,cy+vy);ctx.stroke();
+        ctx.setLineDash([]);
+        // tête flèche individuelle
+        const vlen=Math.sqrt(vx*vx+vy*vy);
+        if(vlen>4){
+          const nvx=vx/vlen,nvy=vy/vlen;
+          ctx.fillStyle=pcol;
+          const ang=Math.atan2(nvy,nvx);
+          ctx.save();ctx.translate(cx+vx,cy+vy);ctx.rotate(ang);
+          ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-5,-3.5);ctx.lineTo(-5,3.5);ctx.closePath();ctx.fill();
+          ctx.restore();
+          ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillStyle=pcol;
+          ctx.fillText('F'+(i+1)+'→'+(j+1),cx+vx+nvx*12,cy+vy+nvy*12);
+        }
+        if(F){
+          infos.push('|F'+(i+1)+'→'+(j+1)+'| = '+F.toExponential(2)+' N');
+        }
+      }
+    }
+
+    // résultante en rouge vif pour cette charge
+    if(nb>1){
+      const flen=Math.sqrt(ftx*ftx+fty*fty);
+      if(flen>3){
+        drawArrow(ctx,cx,cy,ftx,fty,COLORS[j],'F_tot'+(j+1),false);
+      }
+    }
+  }
+
+  // distance entre chaque paire
+  if(nb>1){
+    for(let i=0;i<nb;i++){
+      for(let j=i+1;j<nb;j++){
+        const ci=charges[i],cj=charges[j];
+        const mx=(cpx(ci)+cpx(cj))/2;
+        const my=(cpy(ci)+cpy(cj))/2;
+        const dx=cpx(cj)-cpx(ci),dy=cpy(cj)-cpy(ci);
+        const r=Math.sqrt(dx*dx+dy*dy)/W*5;
+        ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillStyle='#aaa';
+        ctx.fillText('r='+(r*100).toFixed(1)+'cm',mx,my-8);
+      }
+    }
+  }
+
+  // charges
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    const r=chargeRadius(c.q);
+    ctx.beginPath();ctx.arc(cpx(c),cpy(c),r,0,Math.PI*2);
+    ctx.fillStyle=BGCOLORS[i];ctx.fill();
+    ctx.strokeStyle=COLORS[i];ctx.lineWidth=2.5;ctx.stroke();
+    ctx.fillStyle=COLORS[i];ctx.font='500 16px system-ui';ctx.textAlign='center';
+    ctx.fillText(c.q>0?'+':c.q<0?'−':'0',cpx(c),cpy(c)+6);
+    ctx.font='500 12px system-ui';
+    ctx.fillText('Q'+(i+1)+' '+(c.q>=0?'+':'')+c.q+'nC',cpx(c),cpy(c)+r+15);
+  }
+
+  // infobox
+  const uniq=[...new Set(infos)];
+  document.getElementById('infobox').innerHTML=uniq.join(' &nbsp;|&nbsp; ')||'&nbsp;';
+
+  requestAnimationFrame(draw);
+}
+
+// drag
+function getPos(e){
+  const r=cv.getBoundingClientRect();
+  const touch=e.touches?e.touches[0]:e;
+  return{x:touch.clientX-r.left,y:touch.clientY-r.top};
+}
+function startDrag(e){
+  const {x,y}=getPos(e);
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    if(Math.sqrt((x-cpx(c))**2+(y-cpy(c))**2)<chargeRadius(c.q)+8){dragging=i;cv.style.cursor='grabbing';break;}
+  }
+}
+function moveDrag(e){
+  if(dragging<0) return;
+  e.preventDefault();
+  const {x,y}=getPos(e);
+  charges[dragging].x=Math.max(0.02,Math.min(0.98,x/W));
+  charges[dragging].y=Math.max(0.02,Math.min(0.98,y/H));
+}
+function endDrag(){dragging=-1;cv.style.cursor='default';}
+
+cv.addEventListener('mousedown',startDrag);
+cv.addEventListener('mousemove',moveDrag);
+cv.addEventListener('mouseup',endDrag);
+cv.addEventListener('touchstart',startDrag,{passive:false});
+cv.addEventListener('touchmove',moveDrag,{passive:false});
+cv.addEventListener('touchend',endDrag);
+
+setNb(2);
+buildControls();
+draw();
+</script>
