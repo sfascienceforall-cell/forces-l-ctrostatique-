@@ -68,13 +68,17 @@ a{color:inherit}
 @media (max-width:520px){.row,div:has(>input[type=range]){flex-wrap:wrap!important}
   .row>.pill:first-child,div:has(>input[type=range])>.pill:first-child{min-width:0!important;flex:1 1 100%}
   input[type=range]{min-width:0!important}.val{min-width:0!important}}
-.val{background:none!important;border:0!important;border-radius:0!important;padding:0!important;font:600 .9rem var(--f-num)!important;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink)}
-.btn{background:var(--paper)!important;border:1px solid var(--line2)!important;border-radius:7px!important;color:var(--ink2)!important;
-  font:700 .82rem var(--f-ui)!important;padding:7px 13px!important;transition:background .15s,border-color .15s;cursor:pointer}
+.val{background:none!important;border:0!important;border-radius:0!important;padding:0!important;font:800 .92rem var(--f-ui)!important;font-variant-numeric:tabular-nums;text-align:right;color:var(--ink);white-space:nowrap}
+.btn{background:var(--paper)!important;border:1px solid var(--line2)!important;border-radius:8px!important;color:var(--ink)!important;
+  font:800 .82rem var(--f-ui)!important;letter-spacing:.005em;padding:8px 14px!important;transition:background .15s,border-color .15s;cursor:pointer}
+.btn:active{transform:translateY(1px)}
 .btn:hover{background:var(--press)!important;border-color:var(--faint)!important}
 .btn.on{background:var(--navy)!important;border-color:var(--navy)!important;color:#fff!important;box-shadow:none}
-.fml{background:var(--sel)!important;border:0!important;border-radius:10px!important;font:400 1.06rem/1.7 var(--f-math)!important;color:var(--ink);padding:10px 14px!important;margin:12px 0!important}
-.info{background:var(--bg)!important;border:1px solid var(--line)!important;border-radius:10px!important;font:500 .84rem/1.8 var(--f-num)!important;color:var(--muted)!important;padding:9px 14px!important}
+.fml{background:var(--sel)!important;border:0!important;border-left:4px solid var(--navy)!important;border-radius:10px!important;font:600 1rem/1.75 var(--f-ui)!important;color:var(--ink);padding:12px 16px!important;margin:12px 0!important}
+.fml b,.fml strong{font-weight:800}
+.fml sub,.fml sup,.info sub,.info sup{font-size:.72em}
+.info{background:var(--bg)!important;border:1px solid var(--line)!important;border-radius:10px!important;font:600 .86rem/1.8 var(--f-ui)!important;font-variant-numeric:tabular-nums;color:var(--muted)!important;padding:10px 14px!important}
+.info b,.info strong{font-weight:800}
 select{font:600 .86rem var(--f-ui)!important;border:1px solid var(--line2)!important;border-radius:7px!important;background:var(--paper)!important;color:var(--ink)!important;padding:6px 8px!important}
 input[type=range]{-webkit-appearance:none;appearance:none;height:24px;background:linear-gradient(var(--line),var(--line)) center/100% 4px no-repeat;cursor:pointer;--pc:var(--blue)}
 input[type=range]::-webkit-slider-runnable-track{height:4px;background:transparent;border-radius:2px}
@@ -92,7 +96,7 @@ button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(-
 .sfa-list a{display:grid;grid-template-columns:22px 1fr;gap:8px;align-items:baseline;padding:7px 8px;border-radius:8px;text-decoration:none;font:600 13px/1.35 var(--f-ui);color:var(--ink2)}
 .sfa-list a:hover{background:var(--press)}
 .sfa-list a.on{background:var(--sel);color:var(--chip-ink)}
-.sfa-list a i{font:600 11px var(--f-num);font-style:normal;color:var(--faint)}
+.sfa-list a i{font:800 11px var(--f-ui);font-style:normal;color:var(--faint)}
 .sfa-promo{background:var(--navy);color:#fff;border-radius:12px;padding:16px}
 .sfa-promo small{display:block;font:800 10px var(--f-ui);letter-spacing:.12em;text-transform:uppercase;color:var(--yellow);margin-bottom:6px}
 .sfa-promo b{display:block;font:800 16px/1.3 var(--f-ui);margin-bottom:12px}
@@ -132,8 +136,8 @@ new MutationObserver(ms=>ms.forEach(m=>{if(m.target.classList&&m.target.classLis
 </script>
 <header class="sfa-top"><div class="in">
   <a class="sfa-logo" href="https://sfascienceforall-cell.github.io/simulations/"><i>SFA</i>Science For All</a>
-  <nav class="sfa-nav"><a class="on" href="https://sfascienceforall-cell.github.io/simulations/">Simulations</a><a href="#">Prépa médecine</a></nav>
-  <a class="sfa-cta" href="#">Découvrir la prépa</a></div></header>
+  <nav class="sfa-nav"><a class="on" href="https://sfascienceforall-cell.github.io/simulations/">Simulations</a><a href="https://sfascienceforall-cell.github.io/simulations/#EX">Exercices</a><a href="https://sfascienceforall-cell.github.io/simulations/prepa/">Prépa médecine</a></nav>
+  <a class="sfa-cta" href="https://sfascienceforall-cell.github.io/simulations/prepa/">Découvrir la prépa</a></div></header>
 <div class="sfa-page">
 <nav class="sfa-crumbs" aria-label="Fil d'Ariane"><a href="https://sfascienceforall-cell.github.io/simulations/">Simulations</a>›<a href="https://sfascienceforall-cell.github.io/simulations/#PH8">PH8 · Électrostatique</a>›<b>Forces électrostatiques</b></nav>
 <div class="sfa-grid"><main style="min-width:0">
@@ -172,7 +176,9 @@ const COLORS=['#E24B4A','#378ADD','#1D9E75'];
 const BGCOLORS=['#fcebeb','#e6f1fb','#e1f5ee'];
 const BCOLORS=['#f09595','#b5d4f4','#9FE1CB'];
 // couleurs des forces individuelles entre paires
-const PAIR_COLS=['#7F77DD','#BA7517','#D4537E'];
+const PAIR_COLS=['#7F77DD','#BA7517','#a32d2d'];
+const FONT=(w,sz)=>w+' '+sz+'px Mulish,system-ui,sans-serif';
+let DPR=1;
 
 const charges=[
   {x:0.35,y:0.5,q:3},
@@ -217,7 +223,7 @@ function syncSize(){
   const nW=Math.round(r.width)||700;
   const nH=Math.round(r.height)||360;
   if(nW!==W||nH!==H){
-    W=nW;H=nH;cv.width=W;cv.height=H;
+    W=nW;H=nH;
     const nar=W<600; // écran étroit : charges plus écartées pour laisser la place aux flèches
     charges[0].x=nar?0.25:0.28;charges[0].y=0.5;
     charges[1].x=nar?0.75:0.72;charges[1].y=0.5;
@@ -225,9 +231,10 @@ function syncSize(){
   }
 }
 
+function fitDpr(){const d=window.devicePixelRatio||1;if(cv.width!==Math.round(W*d)||cv.height!==Math.round(H*d)){cv.width=Math.round(W*d);cv.height=Math.round(H*d);}DPR=d;}
 function cpx(c){return c.x*W;}
 function cpy(c){return c.y*H;}
-function chargeRadius(q){return 15+Math.abs(q)*2;}
+function chargeRadius(q){return 17+Math.abs(q)*2.2;}
 
 // Force de i sur j (vecteur px)
 function forcePair(i,j,scalePx){
@@ -275,8 +282,7 @@ function placeLabel(ctx,text,x,y,vx,vy,col,side,R){
   }
   if(first){lx=first[0];ly=first[1];}
   LBOX.push({x:lx,y:ly,hw,hh});
-  ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fillRect(lx-hw,ly-hh,2*hw,2*hh);
-  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=col;ctx.fillText(text,lx,ly);
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=4;ctx.strokeText(text,lx,ly);ctx.fillStyle=col;ctx.fillText(text,lx,ly);
   ctx.textBaseline='alphabetic';
 }
 
@@ -288,25 +294,30 @@ function drawArrow(ctx,x,y,vx,vy,col,label,thin,R){
   if(len<2) return;
   const nx=vx/len,ny=vy/len;
   const ex=x+vx,ey=y+vy;
-  ctx.strokeStyle=col;ctx.lineWidth=thin?1.5:2.5;
-  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex,ey);ctx.stroke();
+  const hs=thin?7:11;
+  ctx.strokeStyle=col;ctx.lineWidth=thin?2:3;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(x,y);ctx.lineTo(ex-nx*hs*0.4,ey-ny*hs*0.4);ctx.stroke();
   // tête
-  const hs=thin?6:9;
   ctx.fillStyle=col;
   const ang=Math.atan2(ny,nx);
   ctx.save();ctx.translate(ex,ey);ctx.rotate(ang);
   ctx.beginPath();ctx.moveTo(hs,0);ctx.lineTo(-hs*0.7,-hs*0.5);ctx.lineTo(-hs*0.7,hs*0.5);ctx.closePath();ctx.fill();
   ctx.restore();
   if(label){
-    ctx.font='500 11px Mulish,system-ui,sans-serif';
+    ctx.font=FONT(800,13);
     arrowLabel(ctx,label,x,y,vx,vy,col,1,R);
   }
 }
 
 function draw(){
   syncSize();
-  const ctx=cv.getContext('2d');
+  fitDpr();
+  const ctx=cv.getContext('2d');ctx.setTransform(DPR,0,0,DPR,0,0);
   ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,H);
+  // plan : grille de points discrète
+  ctx.fillStyle='#e3e7ed';const gs=W<600?24:32;
+  for(let gx=gs/2;gx<W;gx+=gs)for(let gy=gs/2;gy<H;gy+=gs){ctx.fillRect(gx-1,gy-1,2,2);}
+  ctx.font=FONT(700,12);ctx.fillStyle='#8a95a3';ctx.textAlign='left';ctx.textBaseline='alphabetic';ctx.fillText('Glisse les charges pour les déplacer',12,22);
 
   const VIZ=4e11; // facteur de visualisation N→px
 
@@ -323,7 +334,7 @@ function draw(){
     for(let i=0;i<nb;i++){
       if(i===j) continue;
       const {fx,fy,F}=forcePair(i,j,VIZ);
-      const LMAX=Math.min(80,W*0.18); // flèches un peu plus courtes sur écran étroit
+      const LMAX=Math.min(96,W*0.18); // flèches un peu plus courtes sur écran étroit
       const vx=fx/F*(Math.min(Math.log10(F*VIZ+1)*18,LMAX));
       const vy=fy/F*(Math.min(Math.log10(F*VIZ+1)*18,LMAX));
       ftx+=vx;fty+=vy;
@@ -333,15 +344,15 @@ function draw(){
         // ligne pointillée entre les deux charges
         const ci=charges[i];
         const same=ci.q*cj.q>0;
-        ctx.strokeStyle=same?'#E24B4A33':'#378ADD33';
-        ctx.lineWidth=1;ctx.setLineDash([5,5]);
+        ctx.strokeStyle=same?'#E24B4A40':'#378ADD40';
+        ctx.lineWidth=1.5;ctx.lineCap='round';ctx.setLineDash([2,6]);
         ctx.beginPath();ctx.moveTo(cpx(ci),cpy(ci));ctx.lineTo(cx,cy);ctx.stroke();
         ctx.setLineDash([]);
 
         // force individuelle (tirets couleur paire)
         const pIdx=Math.min(i+j-1,2);
-        const pcol=PAIR_COLS[pIdx]+'cc';
-        ctx.strokeStyle=pcol;ctx.lineWidth=1.5;ctx.setLineDash([4,3]);
+        const pcol=PAIR_COLS[pIdx];
+        ctx.strokeStyle=pcol;ctx.lineWidth=2;ctx.lineCap='butt';ctx.setLineDash([5,4]);
         ctx.beginPath();ctx.moveTo(cx,cy);ctx.lineTo(cx+vx,cy+vy);ctx.stroke();
         ctx.setLineDash([]);
         // tête flèche individuelle
@@ -351,9 +362,9 @@ function draw(){
           ctx.fillStyle=pcol;
           const ang=Math.atan2(nvy,nvx);
           ctx.save();ctx.translate(cx+vx,cy+vy);ctx.rotate(ang);
-          ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-5,-3.5);ctx.lineTo(-5,3.5);ctx.closePath();ctx.fill();
+          ctx.beginPath();ctx.moveTo(7,0);ctx.lineTo(-6,-4.5);ctx.lineTo(-6,4.5);ctx.closePath();ctx.fill();
           ctx.restore();
-          ctx.font='11px Mulish,system-ui,sans-serif';
+          ctx.font=FONT(800,12);
           arrowLabel(ctx,'F'+(i+1)+'→'+(j+1),cx,cy,vx,vy,PAIR_COLS[pIdx],-1,chargeRadius(cj.q));
         }
         if(F){
@@ -381,26 +392,20 @@ function draw(){
         const my=(cpy(ci)+cpy(cj))/2;
         const dx=cpx(cj)-cpx(ci),dy=cpy(cj)-cpy(ci);
         const r=Math.sqrt(dx*dx+dy*dy)/W*5;
-        ctx.font='11px Mulish,system-ui,sans-serif';ctx.textAlign='center';ctx.fillStyle='#aaa';
+        ctx.font=FONT(700,12);ctx.textAlign='center';
         const dl=Math.sqrt(dx*dx+dy*dy)||1;let ux=-dy/dl,uy=dx/dl;if(uy>0){ux=-ux;uy=-uy;}
-        ctx.fillText('r='+(r*100).toFixed(1)+'cm',mx+ux*26,my+uy*26+4);
-        LBOX.push({x:mx+ux*26,y:my+uy*26,hw:ctx.measureText('r=000.0cm').width/2+2,hh:7});
+        const rt='r = '+(r*100).toFixed(1)+' cm',rw=ctx.measureText(rt).width;
+        ctx.lineJoin='round';ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=4;ctx.strokeText(rt,mx+ux*26,my+uy*26+4);
+        ctx.fillStyle='#8a95a3';ctx.fillText(rt,mx+ux*26,my+uy*26+4);
+        LBOX.push({x:mx+ux*26,y:my+uy*26,hw:rw/2+3,hh:8});
       }
     }
   }
-  LQ.forEach(f=>f());
-
-  // charges
-  for(let i=0;i<nb;i++){
-    const c=charges[i];
-    const r=chargeRadius(c.q);
-    ctx.beginPath();ctx.arc(cpx(c),cpy(c),r,0,Math.PI*2);
-    ctx.fillStyle=BGCOLORS[i];ctx.fill();
-    ctx.strokeStyle=COLORS[i];ctx.lineWidth=2.5;ctx.stroke();
-    ctx.fillStyle=COLORS[i];ctx.font='500 16px Mulish,system-ui,sans-serif';ctx.textAlign='center';
-    ctx.fillText(c.q>0?'+':c.q<0?'−':'0',cpx(c),cpy(c)+6);
-    ctx.font='500 12px Mulish,system-ui,sans-serif';
-    const lt='Q'+(i+1)+' '+(c.q>=0?'+':'')+c.q+'nC',lw=ctx.measureText(lt).width/2+2;
+  // noms des charges : placés AVANT les étiquettes de forces pour que celles-ci les évitent
+  const NAMES=[];
+  for(let i=0;i<nb;i++){const c=charges[i];const r=chargeRadius(c.q);
+    ctx.font=FONT(800,13);ctx.textAlign='center';
+    const lt='Q'+(i+1)+' = '+(c.q>0?'+':c.q<0?'−':'')+Math.abs(c.q)+' nC',lw=ctx.measureText(lt).width/2+2;
     // nom de la charge : dessous, dessus, à droite ou à gauche — là où aucune flèche ne part, et dans le canvas
     const cands=[[Math.PI/2,0,r+15],[-Math.PI/2,0,-r-7],[0,r+6+lw,4],[Math.PI,-r-6-lw,4]];
     let best=null,bs=-1;
@@ -411,7 +416,26 @@ function draw(){
       if(m>bs+0.05){bs=m;best=[tx,ty];}
     }
     if(!best) best=[Math.max(lw,Math.min(W-lw,cpx(c))),Math.min(H-3,cpy(c)+r+15)];
-    ctx.fillText(lt,best[0],best[1]);
+    LBOX.push({x:best[0],y:best[1]-5,hw:lw,hh:9});NAMES.push([lt,best]);
+  }
+  LQ.forEach(f=>f());
+
+  // charges
+  for(let i=0;i<nb;i++){
+    const c=charges[i];
+    const r=chargeRadius(c.q);
+    const X=cpx(c),Y=cpy(c);
+    ctx.save();ctx.shadowColor='rgba(19,35,58,.22)';ctx.shadowBlur=10;ctx.shadowOffsetY=3;
+    const rg=ctx.createRadialGradient(X-r*0.35,Y-r*0.4,r*0.1,X,Y,r);rg.addColorStop(0,'#ffffff');rg.addColorStop(1,BCOLORS[i]);
+    ctx.beginPath();ctx.arc(X,Y,r,0,Math.PI*2);ctx.fillStyle=rg;ctx.fill();ctx.restore();
+    ctx.beginPath();ctx.arc(X,Y,r,0,Math.PI*2);ctx.strokeStyle=COLORS[i];ctx.lineWidth=2.5;ctx.stroke();
+    // signe dessiné (net quel que soit la police)
+    ctx.strokeStyle=COLORS[i];ctx.lineWidth=3;ctx.lineCap='round';const sg=Math.max(6,r*0.38);
+    ctx.beginPath();if(c.q!==0){ctx.moveTo(X-sg,Y);ctx.lineTo(X+sg,Y);}if(c.q>0){ctx.moveTo(X,Y-sg);ctx.lineTo(X,Y+sg);}ctx.stroke();
+    if(c.q===0){ctx.fillStyle=COLORS[i];ctx.font=FONT(800,15);ctx.textAlign='center';ctx.fillText('0',X,Y+5);}
+    const [lt,best]=NAMES[i];ctx.font=FONT(800,13);ctx.textAlign='center';
+    ctx.lineJoin='round';ctx.strokeStyle='rgba(255,255,255,.95)';ctx.lineWidth=4;ctx.strokeText(lt,best[0],best[1]);
+    ctx.fillStyle=COLORS[i];ctx.fillText(lt,best[0],best[1]);
   }
 
   // infobox
@@ -458,7 +482,7 @@ draw();
 </section></main>
 <aside class="sfa-side">
   <div class="sfa-list"><h2>PH8 · Électrostatique<span>4 simulations</span></h2><ol><li><a class="on" aria-current="page" href="https://sfascienceforall-cell.github.io/forces-l-ctrostatique-/"><i>01</i>Forces électrostatiques</a></li><li><a href="https://sfascienceforall-cell.github.io/champ-l-ctrostatique-/"><i>02</i>Champ électrostatique</a></li><li><a href="https://sfascienceforall-cell.github.io/simulations/charge-champ-uniforme/"><i>03</i>Une charge entre deux plaques</a></li><li><a href="https://sfascienceforall-cell.github.io/Conducteur/"><i>04</i>Conducteur</a></li></ol></div>
-  <div class="sfa-promo"><small>Envie d'aller plus loin ?</small><b>La prépa SFA : le cours complet, les exercices type examen corrigés et le suivi.</b><a href="#">Voir la prépa</a></div>
+  <div class="sfa-promo"><small>Envie d'aller plus loin ?</small><b>La prépa SFA : le cours complet, les exercices type examen corrigés et le suivi.</b><a href="https://sfascienceforall-cell.github.io/simulations/prepa/">Voir la prépa</a></div>
 </aside></div></div>
 <footer class="sfa-foot">Science For All · simulations interactives de physique</footer>
 </body>
