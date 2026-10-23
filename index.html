@@ -1,3 +1,13 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Forces électrostatiques · SFA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700&family=STIX+Two+Text:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@500&display=swap">
+</head>
+<body>
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
@@ -9,6 +19,81 @@ canvas{display:block;border-radius:12px;border:1.5px solid #e8e8e8;cursor:defaul
 .btn{padding:8px 20px;border-radius:20px;font-size:13px;font-weight:500;cursor:pointer;border:1.5px solid #d0d0d0;background:#fff;color:#2c2c2a;}
 .btn.active{border-color:#185fa5;background:#e6f1fb;color:#185fa5;}
 </style>
+<style id="sfa-kit">
+/* Kit SFA (clair) — plan blanc sur fond gris-bleu froid, encre bleu nuit, or en accent unique, réglages en règle graduée. */
+:root{--bg:#f3f5f8;--paper:#ffffff;--ink:#0c1f2e;--muted:#5b6b7b;--faint:#8a98a6;--rule:#dfe4ea;--rule2:#c9d1da;
+  --gold:#d9973f;--gold-ink:#9a6420;--press:#e9edf2;
+  --f-ui:"Mulish",system-ui,-apple-system,"Segoe UI",sans-serif;--f-math:"STIX Two Text","Cambria Math",serif;
+  --f-num:"JetBrains Mono",ui-monospace,monospace;color-scheme:light}
+html{background:var(--bg)}
+body{background:var(--bg)!important;color:var(--ink);font-family:var(--f-ui)!important;font-size:15px;line-height:1.5;
+  max-width:1180px;margin:0 auto!important;padding:20px 16px 32px!important}
+.sfa-head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:6px 24px;
+  border-bottom:1px solid var(--rule);padding-bottom:10px;margin-bottom:16px}
+.sfa-head h1{font:700 1.5rem/1.2 var(--f-ui);margin:0;letter-spacing:-.005em;text-wrap:balance}
+.sfa-head h1 small{display:block;font:400 .88rem var(--f-ui);color:var(--muted);margin-top:3px}
+.sfa-head .sfa-tag{font:600 .8rem var(--f-ui);color:var(--muted)}
+.sfa-head .sfa-tag b{color:var(--gold-ink);font-weight:700}
+select{font:500 .86rem var(--f-ui)!important;border:1px solid var(--rule2)!important;border-radius:3px!important;background:var(--paper)!important;color:var(--ink)!important;padding:5px 8px!important}
+.sfa-stage{border:1px solid var(--rule)!important;border-radius:4px!important;box-shadow:0 1px 2px rgba(12,31,46,.05),0 8px 24px -16px rgba(12,31,46,.18)}
+.sfa-stage canvas{border:0!important;box-shadow:none!important}
+canvas{background:var(--paper);border:1px solid var(--rule)!important;border-radius:4px!important;box-shadow:0 1px 2px rgba(12,31,46,.05),0 8px 24px -16px rgba(12,31,46,.18)}
+.row{gap:12px!important;margin:10px 0!important}
+.pill,.lbl,.tag{background:none!important;border:0!important;border-radius:0!important;padding:0!important;
+  font:600 .86rem var(--f-ui)!important;color:var(--muted);min-width:0}
+.val{background:none!important;border:0!important;border-radius:0!important;padding:0!important;
+  font:500 .9rem var(--f-num)!important;font-variant-numeric:tabular-nums;text-align:right}
+.btn{background:transparent!important;border:1px solid var(--rule2)!important;border-radius:3px!important;color:var(--muted)!important;
+  font:600 .82rem var(--f-ui)!important;padding:6px 12px!important;transition:color .15s,background .15s}
+.btn:hover{color:var(--ink)!important;background:var(--press)!important}
+.btn.on{background:var(--ink)!important;border-color:var(--ink)!important;color:#fff!important;box-shadow:inset 0 -2px 0 var(--gold)}
+.fml{background:transparent!important;border:0!important;border-left:2px solid var(--gold)!important;border-radius:0!important;
+  font:400 1.08rem/1.7 var(--f-math)!important;color:var(--ink);padding:4px 0 4px 14px!important;margin:14px 0!important}
+.info{background:var(--paper)!important;border:1px solid var(--rule)!important;border-radius:3px!important;
+  font:500 .84rem/1.8 var(--f-num)!important;color:var(--muted)!important;padding:8px 14px!important}
+input[type=range]{-webkit-appearance:none;appearance:none;height:24px;background:linear-gradient(var(--rule2),var(--rule2)) center/100% 2px no-repeat;cursor:pointer;--pc:var(--gold)}
+input[type=range]::-webkit-slider-runnable-track{height:2px;background:transparent}
+input[type=range]::-moz-range-track{height:2px;background:transparent}
+input[type=range]::-moz-range-progress{height:2px;background:var(--pc)}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:6px;height:20px;border-radius:1px;background:var(--pc);margin-top:-9px;border:0}
+input[type=range]::-moz-range-thumb{width:6px;height:20px;border-radius:1px;background:var(--pc);border:0}
+button:focus-visible,input:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.sfa-foot{margin-top:22px;padding-top:10px;border-top:1px solid var(--rule);font-size:.78rem;color:var(--faint)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<script>
+/* Curseurs : la couleur du curseur reprend celle de son accent-color d'origine ; remplissage gauche en couleur. */
+addEventListener('DOMContentLoaded',()=>{
+/* Curseurs : couleur reprise de accent-color, remplissage à gauche. Resynchronisé en continu pour suivre
+   les curseurs créés ou déplacés par la simulation elle-même. */
+const fill=r=>{if(!r.dataset.sfa){r.dataset.sfa=1;const c=r.style.accentColor||getComputedStyle(r).accentColor;
+    if(c&&c!=='auto')r.style.setProperty('--pc',c);}
+  const v=r.value+'|'+r.min+'|'+r.max;if(r._sv===v)return;r._sv=v;
+  const p=(r.value-r.min)/(r.max-r.min)*100;
+  r.style.background=`linear-gradient(to right,var(--pc) ${p}%,var(--rule2) ${p}%) center/100% 2px no-repeat`;};
+const all=()=>document.querySelectorAll('input[type=range]').forEach(fill);
+all();document.addEventListener('input',e=>{if(e.target.matches&&e.target.matches('input[type=range]'))fill(e.target);});
+setInterval(all,150);
+/* Contrôles écrits en style en ligne (sans classe) : on leur donne les classes du kit. */
+const st=e=>(e.getAttribute('style')||'').replace(/\s/g,'').toLowerCase();
+const isPill=e=>/border-radius:(1[6-9]|20|99)px/.test(st(e));
+document.querySelectorAll('span').forEach(sp=>{if(sp.classList.length||!isPill(sp))return;
+  const n=sp.nextElementSibling,pv=sp.previousElementSibling;
+  if(n&&n.matches('input[type=range],select,button'))sp.classList.add('pill');
+  else if(pv&&pv.matches('input[type=range],select'))sp.classList.add('val');
+  else sp.classList.add('pill');});
+document.querySelectorAll('div').forEach(d=>{if(d.classList.length)return;const s=st(d);
+  if(/border-radius:(1[6-9]|20)px/.test(s)&&/monospace/.test(s))d.classList.add(d.id==='fml'?'fml':'info');
+  else if(d.querySelector(':scope>canvas')&&/border-radius:1[0-4]px/.test(s))d.classList.add('sfa-stage');});
+const tag=b=>{const s=st(b);b.classList.toggle('on',/#185fa5|rgb\(24,95,165\)/.test(s)&&!/#fff[;f]|#ffffff|rgb\(255,255,255\)/.test(s.match(/background:[^;]+/)?.[0]||''));};
+document.querySelectorAll('button:not(.btn)').forEach(b=>{b.classList.add('btn','sfa-n');tag(b);});
+new MutationObserver(ms=>ms.forEach(m=>{if(m.target.classList&&m.target.classList.contains('sfa-n'))tag(m.target);}))
+  .observe(document.body,{subtree:true,attributes:true,attributeFilter:['style']});
+});
+</script>
+<header class="sfa-head"><h1>Forces électrostatiques<small>Loi de Coulomb entre charges</small></h1><span class="sfa-tag"><b>SFA</b> · Physique · Électrostatique</span></header>
+
+
 
 <canvas id="cv" style="width:100%;height:60vh;min-height:320px;"></canvas>
 
@@ -86,8 +171,9 @@ function syncSize(){
   const nH=Math.round(r.height)||360;
   if(nW!==W||nH!==H){
     W=nW;H=nH;cv.width=W;cv.height=H;
-    charges[0].x=0.28;charges[0].y=0.5;
-    charges[1].x=0.72;charges[1].y=0.5;
+    const nar=W<600; // écran étroit : charges plus écartées pour laisser la place aux flèches
+    charges[0].x=nar?0.25:0.28;charges[0].y=0.5;
+    charges[1].x=nar?0.75:0.72;charges[1].y=0.5;
     charges[2].x=0.5;charges[2].y=0.25;
   }
 }
@@ -114,7 +200,43 @@ function forcePair(i,j,scalePx){
   return{fx,fy,F,r};
 }
 
-function drawArrow(ctx,x,y,vx,vy,col,label,thin){
+// Étiquette posée à côté de la flèche (côté side : -1 = haut, +1 = bas), sans chevaucher la charge ni la flèche
+function arrowLabel(ctx,text,x,y,vx,vy,col,side,R){
+  // les flèches occupent la place : on les note, l'étiquette est posée plus tard (après toutes les flèches)
+  const L0=Math.sqrt(vx*vx+vy*vy);
+  for(let t=0.15;t<=1.001;t+=0.08) LBOX.push({x:x+vx*t,y:y+vy*t,hw:1.5,hh:1.5});
+  const font=ctx.font;
+  LQ.push(()=>{ctx.font=font;placeLabel(ctx,text,x,y,vx,vy,col,side,R);});
+}
+function placeLabel(ctx,text,x,y,vx,vy,col,side,R){
+  const len=Math.sqrt(vx*vx+vy*vy); if(len<1) return;
+  const nx=vx/len,ny=vy/len;
+  let px=-ny,py=nx; if(py>0||(py===0&&px>0)){px=-px;py=-py;} // px,py : normale « vers le haut »
+  px*=-side;py*=-side;
+  const w=ctx.measureText(text).width,hw=w/2+3,hh=8;
+  const ext=hw*Math.abs(nx)+hh*Math.abs(ny);
+  const s=Math.max(len-ext,(R||0)+ext+2);
+  const off=hw*Math.abs(py)+hh*Math.abs(px)+3;
+  // essais successifs (côté prévu, autre côté, plus loin) pour éviter les étiquettes déjà posées et les charges
+  const hit=(bx,by)=>LBOX.some(b=>Math.abs(bx-b.x)<hw+b.hw&&Math.abs(by-b.y)<hh+b.hh);
+  let lx,ly,first=null;
+  for(const [sd,k,sa] of [[1,0,0],[-1,0,0],[1,1,0],[-1,1,0],[1,0,ext],[-1,0,ext],[1,2,0],[-1,2,0]]){
+    lx=x+nx*(s+sa)+px*sd*(off+k*2*hh); ly=y+ny*(s+sa)+py*sd*(off+k*2*hh);
+    lx=Math.max(hw+2,Math.min(W-hw-2,lx)); ly=Math.max(hh+2,Math.min(H-hh-2,ly));
+    if(!first) first=[lx,ly];
+    if(!hit(lx,ly)) {first=null;break;}
+  }
+  if(first){lx=first[0];ly=first[1];}
+  LBOX.push({x:lx,y:ly,hw,hh});
+  ctx.fillStyle='rgba(255,255,255,0.85)';ctx.fillRect(lx-hw,ly-hh,2*hw,2*hh);
+  ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillStyle=col;ctx.fillText(text,lx,ly);
+  ctx.textBaseline='alphabetic';
+}
+
+let LBOX=[],LQ=[]; // boîtes déjà occupées (étiquettes, charges) pour l'image en cours
+let ADIR=[]; // directions des flèches partant de chaque charge
+
+function drawArrow(ctx,x,y,vx,vy,col,label,thin,R){
   const len=Math.sqrt(vx*vx+vy*vy);
   if(len<2) return;
   const nx=vx/len,ny=vy/len;
@@ -129,8 +251,8 @@ function drawArrow(ctx,x,y,vx,vy,col,label,thin){
   ctx.beginPath();ctx.moveTo(hs,0);ctx.lineTo(-hs*0.7,-hs*0.5);ctx.lineTo(-hs*0.7,hs*0.5);ctx.closePath();ctx.fill();
   ctx.restore();
   if(label){
-    ctx.font='500 11px system-ui';ctx.textAlign='center';ctx.fillStyle=col;
-    ctx.fillText(label,ex+nx*14,ey+ny*14);
+    ctx.font='500 11px Mulish,system-ui,sans-serif';
+    arrowLabel(ctx,label,x,y,vx,vy,col,1,R);
   }
 }
 
@@ -142,6 +264,8 @@ function draw(){
   const VIZ=4e11; // facteur de visualisation N→px
 
   const infos=[];
+  LBOX=[];LQ=[];ADIR=[[],[],[]];
+  for(let i=0;i<nb;i++){const r=chargeRadius(charges[i].q);LBOX.push({x:cpx(charges[i]),y:cpy(charges[i]),hw:r,hh:r});}
 
   // Pour chaque charge, calculer les forces individuelles et la résultante
   for(let j=0;j<nb;j++){
@@ -152,9 +276,11 @@ function draw(){
     for(let i=0;i<nb;i++){
       if(i===j) continue;
       const {fx,fy,F}=forcePair(i,j,VIZ);
-      const vx=fx/F*(Math.min(Math.log10(F*VIZ+1)*18,80));
-      const vy=fy/F*(Math.min(Math.log10(F*VIZ+1)*18,80));
+      const LMAX=Math.min(80,W*0.18); // flèches un peu plus courtes sur écran étroit
+      const vx=fx/F*(Math.min(Math.log10(F*VIZ+1)*18,LMAX));
+      const vy=fy/F*(Math.min(Math.log10(F*VIZ+1)*18,LMAX));
       ftx+=vx;fty+=vy;
+      if(showInd&&nb>1) ADIR[j].push(Math.atan2(vy,vx));
 
       if(showInd&&nb>1){
         // ligne pointillée entre les deux charges
@@ -180,8 +306,8 @@ function draw(){
           ctx.save();ctx.translate(cx+vx,cy+vy);ctx.rotate(ang);
           ctx.beginPath();ctx.moveTo(6,0);ctx.lineTo(-5,-3.5);ctx.lineTo(-5,3.5);ctx.closePath();ctx.fill();
           ctx.restore();
-          ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillStyle=pcol;
-          ctx.fillText('F'+(i+1)+'→'+(j+1),cx+vx+nvx*12,cy+vy+nvy*12);
+          ctx.font='11px Mulish,system-ui,sans-serif';
+          arrowLabel(ctx,'F'+(i+1)+'→'+(j+1),cx,cy,vx,vy,PAIR_COLS[pIdx],-1,chargeRadius(cj.q));
         }
         if(F){
           infos.push('|F'+(i+1)+'→'+(j+1)+'| = '+F.toExponential(2)+' N');
@@ -193,7 +319,8 @@ function draw(){
     if(nb>1){
       const flen=Math.sqrt(ftx*ftx+fty*fty);
       if(flen>3){
-        drawArrow(ctx,cx,cy,ftx,fty,COLORS[j],'F_tot'+(j+1),false);
+        ADIR[j].push(Math.atan2(fty,ftx));
+        drawArrow(ctx,cx,cy,ftx,fty,COLORS[j],'F_tot'+(j+1),false,chargeRadius(cj.q));
       }
     }
   }
@@ -207,11 +334,14 @@ function draw(){
         const my=(cpy(ci)+cpy(cj))/2;
         const dx=cpx(cj)-cpx(ci),dy=cpy(cj)-cpy(ci);
         const r=Math.sqrt(dx*dx+dy*dy)/W*5;
-        ctx.font='11px system-ui';ctx.textAlign='center';ctx.fillStyle='#aaa';
-        ctx.fillText('r='+(r*100).toFixed(1)+'cm',mx,my-8);
+        ctx.font='11px Mulish,system-ui,sans-serif';ctx.textAlign='center';ctx.fillStyle='#aaa';
+        const dl=Math.sqrt(dx*dx+dy*dy)||1;let ux=-dy/dl,uy=dx/dl;if(uy>0){ux=-ux;uy=-uy;}
+        ctx.fillText('r='+(r*100).toFixed(1)+'cm',mx+ux*26,my+uy*26+4);
+        LBOX.push({x:mx+ux*26,y:my+uy*26,hw:ctx.measureText('r=000.0cm').width/2+2,hh:7});
       }
     }
   }
+  LQ.forEach(f=>f());
 
   // charges
   for(let i=0;i<nb;i++){
@@ -220,10 +350,21 @@ function draw(){
     ctx.beginPath();ctx.arc(cpx(c),cpy(c),r,0,Math.PI*2);
     ctx.fillStyle=BGCOLORS[i];ctx.fill();
     ctx.strokeStyle=COLORS[i];ctx.lineWidth=2.5;ctx.stroke();
-    ctx.fillStyle=COLORS[i];ctx.font='500 16px system-ui';ctx.textAlign='center';
+    ctx.fillStyle=COLORS[i];ctx.font='500 16px Mulish,system-ui,sans-serif';ctx.textAlign='center';
     ctx.fillText(c.q>0?'+':c.q<0?'−':'0',cpx(c),cpy(c)+6);
-    ctx.font='500 12px system-ui';
-    ctx.fillText('Q'+(i+1)+' '+(c.q>=0?'+':'')+c.q+'nC',cpx(c),cpy(c)+r+15);
+    ctx.font='500 12px Mulish,system-ui,sans-serif';
+    const lt='Q'+(i+1)+' '+(c.q>=0?'+':'')+c.q+'nC',lw=ctx.measureText(lt).width/2+2;
+    // nom de la charge : dessous, dessus, à droite ou à gauche — là où aucune flèche ne part, et dans le canvas
+    const cands=[[Math.PI/2,0,r+15],[-Math.PI/2,0,-r-7],[0,r+6+lw,4],[Math.PI,-r-6-lw,4]];
+    let best=null,bs=-1;
+    for(const [a,ox,oy] of cands){
+      const tx=cpx(c)+ox,ty=cpy(c)+oy;
+      if(ty>H-3||ty<13||tx-lw<0||tx+lw>W) continue;
+      let m=Math.PI;for(const d of ADIR[i]){let df=Math.abs(((a-d)%(2*Math.PI)+3*Math.PI)%(2*Math.PI)-Math.PI);m=Math.min(m,df);}
+      if(m>bs+0.05){bs=m;best=[tx,ty];}
+    }
+    if(!best) best=[Math.max(lw,Math.min(W-lw,cpx(c))),Math.min(H-3,cpy(c)+r+15)];
+    ctx.fillText(lt,best[0],best[1]);
   }
 
   // infobox
@@ -250,8 +391,9 @@ function moveDrag(e){
   if(dragging<0) return;
   e.preventDefault();
   const {x,y}=getPos(e);
-  charges[dragging].x=Math.max(0.02,Math.min(0.98,x/W));
-  charges[dragging].y=Math.max(0.02,Math.min(0.98,y/H));
+  const rr=(chargeRadius(charges[dragging].q)+3);
+  charges[dragging].x=Math.max(rr/W,Math.min(1-rr/W,x/W));
+  charges[dragging].y=Math.max(rr/H,Math.min(1-rr/H,y/H));
 }
 function endDrag(){dragging=-1;cv.style.cursor='default';}
 
@@ -266,3 +408,6 @@ setNb(2);
 buildControls();
 draw();
 </script>
+<footer class="sfa-foot">Science For All · simulations interactives</footer>
+</body>
+</html>
